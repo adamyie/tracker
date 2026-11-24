@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tracker</title>
+<meta name="description" content="Spending, gym and habit tracker that works offline.">
+<meta name="theme-color" content="#FFF7EC">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Tracker">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header class="top" id="top">
+    <button class="player" id="playerBtn" type="button" aria-label="Your level and trophies">
+      <span class="avatar" id="avatar"></span>
+      <span class="pinfo"><span class="lvl" id="lvlLbl">Lv 1 · Rookie</span><span class="xpbar"><i id="xpFill"></i></span><span class="xptxt" id="xpTxt"></span></span>
+    </button>
+    <span class="streak" id="streakPill" title="Days in a row with something logged">🔥 <b id="streakN">0</b></span>
+    <button class="iconbtn" id="settingsBtn" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </header>
+
+  <div class="pagehead"><div class="eyebrow" id="todayLbl"></div><h1 id="viewTitle">Spend</h1></div>
+  <div class="banner" id="banner" hidden></div>
+
+  <main>
+    <!-- SPEND -->
+    <section id="v-spend" class="view">
+      <button class="wallet" id="walletBar" type="button" aria-label="Wallet: amount left. Tap to add a deposit."></button>
+      <div class="card hero-in">
+        <label class="label" for="amt">How much?</label>
+        <div class="amount"><span class="cur">Rp</span><input id="amt" inputmode="numeric" autocomplete="off" placeholder="0" aria-label="Amount in rupiah"></div>
+        <div class="chips" id="quick"></div>
+      </div>
+      <div class="card">
+        <div class="row-between"><span class="label">Category</span><span class="hint">left this month</span></div>
+        <div class="cat-grid" id="cats"></div>
+      </div>
+      <div class="card">
+        <div class="field"><label class="label" for="note">Note</label>
+          <input id="note" list="noteSuggest" placeholder="Optional, e.g. Kopi Kenangan" autocomplete="off" maxlength="80"><datalist id="noteSuggest"></datalist></div>
+        <div class="field"><span class="label">When</span>
+          <div class="seg" id="whenSeg">
+            <button type="button" data-when="now" aria-pressed="true">Now</button>
+            <button type="button" data-when="yesterday" aria-pressed="false">Yesterday</button>
+            <button type="button" data-when="pick" aria-pressed="false">Pick…</button>
+          </div>
+          <input type="datetime-local" id="sdate" aria-label="Date and time" hidden>
+        </div>
+      </div>
+      <div class="err" id="spendErr" role="alert"></div>
+      <button class="primary" id="saveSpend">Save expense <span class="xpchip">+5 XP</span></button>
+      <div class="card">
+        <div class="row-between"><h2>Today</h2><span class="num strong" id="todayTotal"></span></div>
+        <div class="list" id="spendToday"></div>
+      </div>
+    </section>
+
+    <!-- GYM -->
+    <section id="v-gym" class="view" hidden>
+      <div class="card picker">
+        <div class="row-between"><span class="label">Pick an exercise</span><button type="button" class="linkbtn" id="addExBtn">+ Custom</button></div>
+        <input type="search" id="exSearch" placeholder="Search exercises…" autocomplete="off" aria-label="Search exercises">
+        <div class="chips scroll" id="grpChips"></div>
+        <div id="exList" class="stack-sm"></div>
+      </div>
+      <div class="card setcard" id="setCard">
+        <div class="row-between"><h2 id="exName">Pick an exercise</h2><span class="pill" id="setNo" hidden></span></div>
+        <div class="hint" id="lastInfo">Tap an exercise above. Weight and reps fill in from last time.</div>
+        <div class="two">
+          <div class="field"><label class="label" for="wkg" id="wLbl">Weight kg</label>
+            <div class="stepper"><button type="button" data-step="wkg:-2.5" aria-label="Less weight">−</button><input id="wkg" inputmode="decimal" autocomplete="off"><button type="button" data-step="wkg:2.5" aria-label="More weight">+</button></div></div>
+          <div class="field"><label class="label" for="reps" id="repsLbl">Reps</label>
+            <div class="stepper"><button type="button" id="repsMinus" data-step="reps:-1" aria-label="Less">−</button><input id="reps" inputmode="numeric" autocomplete="off"><button type="button" id="repsPlus" data-step="reps:1" aria-label="More">+</button></div></div>
+        </div>
+        <div class="field"><span class="label">RPE <span class="hint">optional</span></span><div class="chips" id="rpe"></div></div>
+        <div class="field"><label class="label" for="gnote">Note</label><input id="gnote" autocomplete="off" placeholder="Optional" maxlength="80"></div>
+      </div>
+      <div class="err" id="gymErr" role="alert"></div>
+      <button class="primary sky" id="saveSet" disabled>Save set <span class="xpchip">+3 XP</span></button>
+      <div class="card">
+        <div class="row-between"><h2>Today's workout</h2><span class="num hint" id="gymToday"></span></div>
+        <div id="setsToday" class="stack-sm"></div>
+      </div>
+    </section>
+
+    <!-- HABITS -->
+    <section id="v-habits" class="view" hidden>
+      <div class="card quests" id="quests"></div>
+      <div class="stack" id="habitList"></div>
+      <p class="hint center">Tap a day in the row to fix an earlier day this week. Older days are in History.</p>
+    </section>
+
+    <section id="v-history" class="view" hidden></section>
+    <section id="v-insights" class="view" hidden></section>
+    <section id="v-settings" class="view" hidden></section>
+  </main>
+</div>
+
+<div class="rest" id="rest" hidden role="timer" aria-live="off">
+  <span>⏱️ Rest</span><span class="num" id="restT">0:00</span><button type="button" id="restStop">Stop</button>
+</div>
+
+<nav class="tabs" aria-label="Screens"><div class="in">
+  <button data-tab="spend" style="--tc:var(--pink)" aria-current="page"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="3"/><path d="M2.5 10.5h19M16 15h2"/></svg></span><span>Spend</span></button>
+  <button data-tab="gym" style="--tc:var(--sky)"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/></svg></span><span>Gym</span></button>
+  <button data-tab="habits" style="--tc:var(--mint)"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.5 9"/></svg></span><span>Habits</span></button>
+  <button data-tab="history" style="--tc:var(--sun-ink)"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span><span>History</span></button>
+  <button data-tab="insights" style="--tc:var(--accent)"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 20V11M10 20V5M16 20v-6M22 20H2"/></svg></span><span>Insights</span></button>
+</div></nav>
+
+<dialog id="sheet" class="sheet" aria-labelledby="sheetTitle">
+  <form id="sheetForm" novalidate>
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="sheetTitle"></h2><button type="button" class="iconbtn sm" id="sheetClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div id="sheetBody" class="stack"></div>
+    <div class="err" id="sheetErr" role="alert"></div>
+    <div class="sheet-actions">
+      <button type="button" class="danger-ghost" id="sheetDelete">Delete</button>
+      <button type="submit" class="primary" id="sheetSave">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" hidden role="status"><span id="toastMsg"></span><button type="button" id="toastUndo">Undo</button></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
